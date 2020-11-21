@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="style.css" rel="stylesheet">
+    <style>
+        #provinces,
+        #price {
+            width: 120%;
+            height: 10%;
+            
+            border: 1px solid;
+            border-radius: 5px;
+            border-color: #ced4da;
+         
+        }
+
+
+        .fisrtLine {
+
+            display: inline;
+
+        }
+
+        body {
+            min-height: 100vh;
+            background-image: url(image/result-bg.png);
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: IBM Plex Sans Thai, sans-serif;
+            font-weight: 400;
+            line-height: 1.65;
+        }
+
+        #IT {
+            font-size: 25px;
+            color: rgb(27, 195, 0);
+            background-color: white;
+            border-radius: 50%;
+            border: 2px solid;
+            padding: 10px;
+            border-color: rgb(27, 195, 0);
+        }
+
+        #badge1 {
+            background-color: rgb(27, 195, 0);
+            color: white;
+        }
+
+        #badge2 {
+            background-color: #A1A1A1;
+            color: white;
+        }
+
+        #Navprovinces,
+        #Nav {
+            border: none;
+            background-color: #e9ecef;
+            color: #495057;
+        }
+
+        button {
+            width: 30%;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+
+            // ชื่อร้าน
+            $.ajax({
+                method: "GET",
+                url: "/categories",
+                async: false,
+                success: function (data, state, xhr) {
+                
+                    let obj = data
+                    let radio_html = "<input type=radio class=form-check-input /><label>ทั้งหมด</label><br>";
+                    let count = 0;
+                    $.each(obj, function (i, v) {
+                        if ((obj[i].name).includes("ร้านอาหารและเครื่องดื่ม"))
+                            radio_html = radio_html + '<input type="radio" class="form-check-input" name="type' + i + '" id="' + obj[i].name + '" value ="' + obj[i].name + ' " checked /><label>' + obj[i].name + '</label><br>';
+                        else {
+                            radio_html = radio_html + '<input type="radio" class="form-check-input" name="type' + i + '" id="' + obj[i].name + '" value ="' + obj[i].name + ' "/><label>' + obj[i].name + '</label><br>'
+                        }
+
+                        //count++;
+                    });
+
+                    $('#typeshop').html(radio_html);
+                },
+                error: function (xhr, state, error) {
+                    alert("error");
+                }
+            });
+            // จังหวัด
+            $.ajax({
+                method: "GET",
+                url: "/provinces",
+                async: false,
+                success: function (data, state, xhr) {
+                    numb = data.length
+                    // $("#provinces option[value='topic']").remove();
+                    for (i = 0; i < numb; i++) {
+                        function populate(selector) {
+                            $(selector)
+                                .append('<option value="' + data[i] + '">' + data[i] + '</option>')
+                        }
+
+                        populate('#provinces');
+                        populate('#Navprovinces');
+                    }
+
+                },
+                error: function (xhr, state, error) {
+                    alert("error");
+                }
+
+
+
+
+            })
+            // price
+            $.ajax({
+                method: "GET",
+                url: "/priceRange",
+                async: false,
+                success: function (data, state, xhr) {
+                    numb = data.length
+                    // $("#provinces option[value='topic']").remove();
+                    for (i = 0; i < numb; i++) {
+                        function populate(selector) {
+                            $(selector)
+                                .append('<option value="' + data[i] + '">' + data[i] + '</option>')
+                        }
+
+                        populate('#price');
+                    }
+                },
+                error: function (xhr, state, error) {
+                    alert("error");
+                }
+
+
+
+            });
+            //type
+            $.ajax({
+                method: "GET",
+                url: "/categories",
+                async: false,
+                success: function (data, state, xhr) {
+                    $("#typetxt").html("<b><strong>ประเภท" + data[0].name + "</strong> </b>");
+
+                    var obj = data[0].subcategories
+                    var radio_html = "<input type=radio class=form-check-input checked /><label>ทั้งหมด</label><br>";
+                    var count = 0;
+                    $.each(obj, function (i, v) {
+
+                        //if (count == 0) {
+                        // radio_html = radio_html + '<input type="radio" checked name="' + i + '" id="' + i + '"/> <span>Radio ' + i + '</span><br>';
+                        //} else 
+                        radio_html = radio_html + '<input type="radio" class="form-check-input" name="type' + i + '" id="' + obj[i] + '" value ="' + obj[i] + ' "/><label>' + obj[i] + '</label><br>';
+
+
+                        //count++;
+                    });
+
+                    $('#type').html(radio_html);
+                },
+                error: function (xhr, state, error) {
+                    alert("error");
+                }
+
+
+
+            });
+            //ร้านค้า
+            $.ajax({
+                method: "GET",
+                url: "/merchants",
+                async: false,
+                success: function (data, state, xhr) {
+                    for (i = 0; i < data.length; i++) {
+                        $("#CardBody").append('<div class="card my-4"><div class="card-body p-2" id="card' + [i] + '"> </div></div>')
+                        $("#card" + [i]).append('<div class="row"><div class="col-sm-2" "><img class="img-fluid" src="' + data[i].coverImageId + '" alt="image"></div> <div class="col-sm-10"> <div id="1Line' + [i] + '"></div><div id="2Line' + [i] + '"></div><div><hr></div><div id="3Line' + [i] + '"></div><div id="4Line' + [i] + '"></div><div id="5Line' + [i] + '"></div><div class="iconFacility" id="facility' + [i] + '"></div></div></div>')
+                        FirstLine(i)
+                        $("#2Line" + [i] + "").append('<h6 class="fisrtLine">' + data[i].categoryName + '</h6> | <h6 class="fisrtLine" id="priceLevel' + [i] + '"style="color: rgb(153,153,153)"></h6> |<h6 class="fisrtLine" >' + data[i].addressDistrictName + ' ' + data[i].addressProvinceName + '</h6>');
+                        Plevel(i)
+                        $("#3Line" + [i] + "").append("<h6>" + data[i].highlightText + "</h6>")
+                        $("#4Line" + [i] + "").append("<h6>" + data[i].subcategoryName + "</h6>")
+                        $("#5Line" + [i] + "").append("<h6><strong>Recommended Item: </strong>" + data[i].recommendedItems + "</h6>")
+                        Iset(i)
+                    }
+                    $("#CardBody").append('<div class="text-center m-4 "><button class="btn btn-light ">ดูเพิ่มเติม</button></div>')
+
+
+                },
+                error: function (xhr, state, error) {
+                    alert("error");
+                }
+
+
+
+            });
+
+
+        })
+        function FirstLine(i) {
+            $.ajax({
+                method: "GET",
+                url: "/FirstLine",
+                async: false,
+                success: function (data, state, xhr) {
+                    $("#1Line" + [i] + "").html(data[i]);
+                }
+            })
+        }
+        function Plevel(i) {
+            $.ajax({
+                method: "GET",
+                url: "/PlevelSet",
+                async: false,
+                success: function (data, state, xhr) {
+                    $("#priceLevel" + [i] + "").html(data[i]);
+                }
+            })
+        }
+        function Iset(i) {
+            $.ajax({
+                method: "GET",
+                url: "/IconSet",
+                async: false,
+                success: function (data, state, xhr) {
+                    $("#facility" + i + "").html(data[i]);
+                }
+            })
+        }
+
+
+    </script>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-sm navbar-light bg-light sticky-top">
+        <div class="container-fluid ml-5">
+            <a class="navbar-brand" href=" "> <img src="image/logo-KLK.png" width="25%" height="25%"><img
+                    src="image/logoName.png" width="25%" height="25%">
+            </a>
+
+
+
+            <div class="collapse navbar-collapse" id="collapsibleNavId">
+                <ul class="navbar-nav">
+                    <form class="form-inline">
+                        <div class="input-group" id="NavInput">
+
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <select name="provinces" id="Navprovinces" class="fa mr-1">
+
+                                        <option value="topic" id="Nav"><i style='font-size:50px;'
+                                                class='fas mr-4'>&#xf3c5;</i>
+                                            พื้นที่ใกล้ฉัน
+                                        </option>
+
+
+                                    </select>
+                                </span></div>
+
+                            <input type="search" class="form-control" size="80%"
+                                placeholder="ค้นหา ชื่อ ร้านอาหาร และเครื่องดืม ร้านธงฟ้า ร้านค้า OTOP และสินค้าทั่วไป">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class='fas fa-search'
+                                        style='font-size:20px'></i></span>
+                            </div>
+
+                        </div>
+                    </form>
+
+                </ul>
+            </div>
+
+        </div>
+
+    </nav>
+
+    <nav class="navbar navbar-expand-sm navbar-dark" style="background-color:rgb(39, 57, 124)">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavId">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse ml-5" id="collapsibleNavId">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link menu-title" href=" "><u>หน้าแรก</u> / ค้นหา</a>
+
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3">
+                <ul class="list-group my-4">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <div class="">
+                                    <h5><b><strong>ประเภทร้านค้า</strong> </b></h5>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check" id="typeshop">
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 ">
+                                    <h5><b><strong>จังหวัด/ใกล้ฉัน</strong> </b></h5>
+                                </div>
+                                <select name="provinces" id="provinces" class="fa">
+
+                                    <option value="topic"><i style='font-size:24px' class='fas ml-4'>&#xf3c5;</i>
+                                        พื้นที่ใกล้ฉัน</option>
+                                </select>
+                                <div class="mt-3 mb-2">
+                                    <h5><b><strong>ราคา</strong> </b></h5>
+                                </div>
+                                <select name="price" id="price">
+                                    <option value="topic"> กรุณาเลือก</option>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="mt-5 ml-3">
+                                <h5 id="typetxt"></h5>
+                                <div class="form-group mt-2 ">
+                                    <div class="form-check" id="type">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-9" id="CardBody">
+
+            </div>
+
+
+        </div>
+    </div>
+
+
+</body>
+
+</html>
